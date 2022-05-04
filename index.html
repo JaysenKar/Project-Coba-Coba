@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Latihan Ujian Praktek</title>
+    <style>
+      * {
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-image: url("bg.jpg");
+        background-size: cover;
+        font-family: "roboto", sans-serif;
+        margin: 0 20%;
+      }
+      .container {
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        background-color: rgb(213, 221, 221);
+        height: 100vh;
+        padding: 3% 2%;
+      }
+      h2 {
+        margin-bottom: 10px;
+        font-size: 4vh;
+      }
+      .select-box {
+        font-size: 0.85em;
+        display: flex;
+        flex-direction: column;
+      }
+      .selected {
+        font-weight: bold;
+        background-color: rgb(24, 34, 43);
+        border-radius: 8px;
+        color: whitesmoke;
+        margin-bottom: 8px;
+        order: 0;
+        position: relative;
+      }
+      .selected::after {
+        transform: rotateX(0);
+        content: "";
+        filter: invert();
+        background-image: url("arrow.svg");
+        height: 50%;
+        width: 32px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        position: absolute;
+        top: 14px;
+        right: 10px;
+        transition: 0.4s;
+      }
+      .select-box .option-container.active + .selected::after {
+        transform: rotateX(180deg);
+      }
+      .select-box .option-container {
+        /* top: 110px; */
+        margin-top: 60px;
+        z-index: 100;
+        position: absolute;
+        max-height: 0;
+        opacity: 0;
+        color: whitesmoke;
+        width: 57.5%;
+        transition: all 0.4s;
+        border-radius: 8px;
+        background-color: rgb(24, 34, 43);
+        overflow: hidden;
+        order: 1;
+      }
+      .select-box .option,
+      .selected {
+        font-size: 20px;
+        border-bottom: 1px solid rgb(68, 90, 109);
+        padding: 15px 30px;
+        cursor: pointer;
+      }
+      .select-box .option:hover {
+        background-color: rgb(68, 90, 109);
+      }
+      .select-box label {
+        cursor: pointer;
+      }
+      .radio {
+        display: none;
+      }
+      .select-box .option-container.active {
+        max-height: 180px;
+        opacity: 1;
+        overflow-y: scroll;
+      }
+
+      .select-box .option-container::-webkit-scrollbar {
+        width: 8px;
+        background-color: rgb(25, 34, 65);
+
+        border-radius: 0 8px 8px 0;
+      }
+      .select-box .option-container::-webkit-scrollbar-thumb {
+        background-color: rgb(56, 75, 94);
+        border-radius: 0 8px 8px 0;
+      }
+
+      /* penghitung luas persegi */
+      .penghitung {
+        position: absolute;
+        display: none;
+        flex-direction: column;
+        width: 57.5%;
+      }
+      h3 {
+        margin-left: 5%;
+        margin-top: 10px;
+      }
+      .masuk {
+        width: 100%;
+        align-items: center;
+        display: flex;
+        justify-content: space-evenly;
+      }
+      .masuk .selected {
+        padding: 0px;
+        text-align: center;
+        height: 27px;
+        line-height: 27px;
+        width: 50px;
+        border-radius: 3px;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+      }
+      .masuk .select-box .option {
+        padding: 4px;
+        margin: 0;
+      }
+      .masuk .selected::after {
+        content: "";
+        background-image: none;
+      }
+      input[type="number"]::-webkit-inner-spin-button {
+        display: none;
+      }
+      input[type="number"]:focus {
+        transition: box-shadow 0.3s;
+        box-shadow: rgb(56, 75, 94, 0.5) 0px 1px 4px, rgb(56, 75, 94, 0.5) 0px 0px 0px 3px;
+      }
+      input[type="number"] {
+        transition: box-shadow 0.3s;
+        padding: 5px;
+        width: 80%;
+        height: 30px;
+        outline: none;
+        margin: 2px;
+        border: none;
+        border-radius: 2px;
+      }
+      .masuk .option-container {
+        z-index: 1;
+        text-align: center;
+        transform: translateX(10px);
+        border-radius: 4px;
+        overflow-y: auto;
+        margin-top: 10px;
+        width: 50px;
+      }
+      .masuk .option-container::-webkit-scrollbar {
+        display: none;
+      }
+      .tombol {
+        cursor: pointer;
+        text-align: center;
+        margin: 7px auto;
+        background-color: rgb(24, 34, 43);
+        color: white;
+        padding: 10px;
+        width: 70px;
+        border-radius: 2px;
+      }
+      /* responsive */
+
+      @media screen and (max-width: 500px) {
+        body {
+          margin: 0 7%;
+        }
+        .select-box .option-container {
+          width: 82.5%;
+        }
+        .select-box .option,
+        .selected {
+          font-size: 15px;
+        }
+        .penghitung {
+          width: 83%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Perhitungan Luas Bangun Datar</h2>
+      <div class="tempat-memilih">
+        <div class="select-box">
+          <div class="option-container">
+            <div class="option">
+              <input type="radio" class="radio" name="operasi" id="luas-persegi" />
+              <label for="luas-persegi">Luas Persegi</label>
+            </div>
+            <div class="option"><input type="radio" class="radio" name="operasi" id="luas-persegi-panjang" /> <label for="luas-persegi-panjang">Luas Persegi Panjang</label></div>
+            <div class="option">
+              <input type="radio" class="radio" name="operasi" id="luas-segitiga" />
+              <label for="luas-segitiga">Luas Segitiga</label>
+            </div>
+            <div class="option">
+              <input type="radio" class="radio" name="operasi" id="luas-lingkaran" />
+              <label for="luas-lingkaran">Luas Lingkaran</label>
+            </div>
+            <div class="option">
+              <input type="radio" class="radio" name="operasi" id="luas-jajar-genjang" />
+              <label for="luas-jajar-genjang">Luas Jajar Genjang</label>
+            </div>
+          </div>
+          <div class="selected">Pilih Operasi Perhitungan</div>
+        </div>
+      </div>
+      <div class="penghitung penghitung-luas-persegi">
+        <h3>Masukan Sisi</h3>
+        <div class="masuk">
+          <input type="number" class="input sisi-persegi" placeholder="Masukan Angka..." />
+          <div class="select-box">
+            <div class="option-container">
+              <div class="option satuan-panjang">
+                <input type="radio" class="radio" name="satuan" id="cm" />
+                <label for="cm">cm</label>
+              </div>
+              <div class="option satuan-panjang"><input type="radio" class="radio" name="satuan" id="m" /> <label for="satuan">m </label></div>
+            </div>
+            <div class="selected">cm</div>
+          </div>
+        </div>
+        <div class="tombol" onclick="hitungLuasPersegi()">Hitung</div>
+        <div class="text hasil-luas-persegi"></div>
+      </div>
+      <div class="penghitung penghitung-luas-persegi-panjang">
+        <h3>Masukan Panjang</h3>
+        <div class="masuk">
+          <input type="number" class="input panjang-persegi" placeholder="Masukan Angka..." />
+          <div class="select-box">
+            <div class="option-container">
+              <div class="option satuan-panjang">
+                <input type="radio" class="radio" name="satuan" id="cm" />
+                <label for="cm">cm</label>
+              </div>
+              <div class="option satuan-panjang"><input type="radio" class="radio" name="satuan" id="m" /> <label for="satuan">m </label></div>
+            </div>
+            <div class="selected">cm</div>
+          </div>
+        </div>
+        <h3>Masukan Lebar</h3>
+        <div class="masuk">
+          <input type="number" class="input lebar-persegi" placeholder="Masukan Angka..." />
+          <div class="select-box">
+            <div class="option-container">
+              <div class="option satuan-panjang">
+                <input type="radio" class="radio" name="satuan" id="cm" />
+                <label for="cm">cm</label>
+              </div>
+              <div class="option satuan-panjang"><input type="radio" class="radio" name="satuan" id="m" /> <label for="satuan">m </label></div>
+            </div>
+            <div class="selected">cm</div>
+          </div>
+        </div>
+        <div class="tombol">Hitung</div>
+        <div class="text"></div>
+      </div>
+    </div>
+    <script>
+      const selected = document.getElementsByClassName("selected")[0];
+      const optionContainer = document.querySelector(".tempat-memilih .option-container");
+      const optionList = document.querySelectorAll(".tempat-memilih .option");
+      const text = document.getElementsByClassName("text")[0];
+
+      const selectedSatuan = document.querySelectorAll(".masuk .selected");
+      const optionSatuan = document.querySelectorAll(".masuk .option-container");
+      const optionListSatuan = document.querySelectorAll(".container .penghitung .masuk .select-box .option-container .option");
+
+      // get penghitung, text, input ;
+      let inputValue = document.querySelectorAll(".input");
+      const textList = document.querySelectorAll(".text");
+      const penghitung = document.querySelectorAll(".penghitung");
+      let operasi;
+
+      selectedSatuan.forEach((option, index) => {
+        option.addEventListener("click", () => {
+          optionSatuan[index].classList.toggle("active");
+        });
+      });
+      optionListSatuan.forEach((option, index) => {
+        option.addEventListener("click", () => {
+          // selectedSatuan.innerHTML
+          selectedSatuan[Math.floor(index / 2)].innerHTML = option.querySelector(".satuan-panjang label").innerHTML;
+          optionSatuan[Math.floor(index / 2)].classList.remove("active");
+        });
+      });
+
+      selected.addEventListener("click", () => {
+        optionContainer.classList.toggle("active");
+      });
+      // hilangkan display
+      function hilang() {
+        inputValue.forEach((e) => (e.value = ""));
+        textList.forEach((e) => (e.innerHTML = ""));
+        penghitung.forEach((e) => (e.style.display = "none"));
+      }
+      optionList.forEach((option, index) => {
+        option.addEventListener("click", () => {
+          const optionName = document.getElementsByName("operasi");
+          selected.innerHTML = option.querySelector("label").innerHTML;
+          operasi = optionName[index].id;
+          hilang();
+          optionContainer.classList.remove("active");
+          // operasi
+          if (operasi === "luas-persegi") {
+            const luasPersegi = document.querySelector(".penghitung-luas-persegi");
+            luasPersegi.style.display = "flex";
+          } else if (operasi === "luas-persegi-panjang") {
+            const luasPersegi = document.querySelector(".penghitung-luas-persegi-panjang");
+            luasPersegi.style.display = "flex";
+          } else if (operasi === "luas-segitiga") {
+            text.innerHTML = "setengah kali alas kali tinggi";
+          }
+        });
+      });
+      //fungsi hasil
+      function hitungLuasPersegi() {
+        const hasilLuasPersegi = document.getElementsByClassName("hasil-luas-persegi")[0];
+        const sisiPersegi = document.getElementsByClassName("sisi-persegi")[0].value;
+        sisiPersegi === "" ? alert("masukkan angkanya!") : (hasilLuasPersegi.innerHTML = `${sisiPersegi ** 2} ${selectedSatuan.innerHTML}`);
+      }
+    </script>
+  </body>
+</html>
